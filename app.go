@@ -5,17 +5,33 @@ import (
 	"golang.org/x/net/html"
 	"net/http"
 	"os"
+	"github.com/xuri/excelize"
 )
 
 func main() {
+	// create new excel file start
+	f := excelize.NewFile()
+	index := f.NewSheet("linksSheet")
+	f.SetActiveSheet(index)
+
+
+	f.SetCellValue("linksSheet", "A1", "links")
+	// create new excel file end
+
 	for _, url := range os.Args[1:] {
 		links, err := findLinks(url)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "parse: %v\n", err)
 		}
-		for _, link := range links {
-			fmt.Println(link)
+		for i, link := range links {
+			fmt.Println(fmt.Sprintf("=======" ))
+			f.SetCellValue("linksSheet", fmt.Sprintf("A%d", i+1), link)
+			fmt.Println(fmt.Sprintf("%d  : %s", i, link ))
 		}
+	}
+
+	if err := f.SaveAs("Book1.xlsx"); err != nil {
+		fmt.Println(err)
 	}
 }
 
@@ -52,3 +68,20 @@ func visit(links []string, n *html.Node) []string {
 
 	return links
 }
+
+// создаём эксель лист
+// func createSheet(links []string)  {
+// 	f := excelize.NewFile()
+
+// 	index := f.NewSheet("Sheet1")
+
+// 	f.SetActiveSheet(index)
+
+// 	if err := f.SaveAs("Book1.xlsx"); err != nil {
+// 		fmt.Println(err)
+// 	}
+
+// 	for i, link := range links {
+// 		f.SetCellValue("Sheet1", fmt.Sprintf("A%v", i+1), link)
+// 	}
+// }

@@ -1,6 +1,7 @@
 ## Simple parser on Go
 
 v 0.1 - basic functionality
+v 0.2 - add write results to excel file
 
 for run:
 ```
